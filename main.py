@@ -1,14 +1,26 @@
-from _assert import _assert, USStockAssert
 from assertMgr import assertMgr
+import logging
+import sys
+
+def setUpLogger(levels = logging.INFO):
+    logger = logging.getLogger("main")
+    ch = logging.StreamHandler(sys.stdout)
+    fmt = logging.Formatter('%(message)s')
+    ch.setFormatter(fmt)
+    ch.setLevel(levels)
+    logger.addHandler(ch)
+    logger.setLevel(levels)
+    return logger
 
 
 if __name__ == '__main__':
-    """
-    tmp = USStockAssert("VT", 1.0, 1.0)
-    tmp.queryCurrentPrice()
-    tmp = USStockAssert("PFE", 1.0, 1.0)
-    tmp.queryCurrentPrice()
-    """
-    mgr = assertMgr()
+    logger = setUpLogger(logging.DEBUG)
+
+    #logger.basicConfig(format='%(message)s', level=logger.DEBUG)
+    mgr = assertMgr(logger)
+    logger.info("Parsing IBKR positions")
     mgr.parseIBKRPositions()
-    mgr.dumpCurrentAssert()
+    logger.info("Dump Protofolio")
+    mgr.dumpProtofolio()
+
+    mgr.extractExchangeRate()
