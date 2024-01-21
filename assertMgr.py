@@ -17,7 +17,9 @@ class assertMgr():
         root = ET.parse(xmlFileName).getroot()
         date = ""
         for position in root.iter('OpenPosition'):
-            #self.logger.debug(position.attrib)
+            if(position.attrib['listingExchange'] not in ["NYSE", "NASDAQ", "ARCA"]):
+                self.logger.info("{} not US assert, exhanges at {}".format(position.attrib['symbol'], position.attrib['listingExchange']))
+                continue
             IBKRAssert = USStockAssert(self.logger, position.attrib['symbol'], position.attrib['position'], position.attrib['costBasisPrice'])
             self.logger.debug("add symbol: {}, position: {}, costPrice: {}".format(position.attrib['symbol'], position.attrib['position'], position.attrib['costBasisPrice']))
             self.protofolio.append(IBKRAssert)
