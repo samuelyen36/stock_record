@@ -1,4 +1,4 @@
-from assertMgr import assertMgr
+from assetMgr import assetMgr
 import logging
 import sys
 
@@ -17,7 +17,7 @@ if __name__ == '__main__':
     logger = setUpLogger(logging.DEBUG)
 
     #logger.basicConfig(format='%(message)s', level=logger.DEBUG)
-    mgr = assertMgr(logger)
+    mgr = assetMgr(logger)
     logger.info("Parsing IBKR positions")
     mgr.parseIBKRPositions()
     logger.info("Dump Protofolio")

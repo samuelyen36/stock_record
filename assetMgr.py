@@ -1,10 +1,10 @@
 import xml.etree.ElementTree as ET
-from _assert import *
+from _asset import *
 import requests
 
-class assertMgr():
+class assetMgr():
     def __init__(self, logger) -> None:
-        self.protofolio = []       #stores different types of assert, US stock, TW stock or funds
+        self.protofolio = []       #stores different types of asset, US stock, TW stock or funds
         self.exchangeRateUStoTW: float = 0.0
         self.logger = logger
     
@@ -18,11 +18,11 @@ class assertMgr():
         date = ""
         for position in root.iter('OpenPosition'):
             if(position.attrib['listingExchange'] not in ["NYSE", "NASDAQ", "ARCA"]):
-                self.logger.info("{} not US assert, exhanges at {}".format(position.attrib['symbol'], position.attrib['listingExchange']))
+                self.logger.info("{} not US asset, exhanges at {}".format(position.attrib['symbol'], position.attrib['listingExchange']))
                 continue
-            IBKRAssert = USStockAssert(self.logger, position.attrib['symbol'], position.attrib['position'], position.attrib['costBasisPrice'])
+            IBKRasset = USStockasset(self.logger, position.attrib['symbol'], position.attrib['position'], position.attrib['costBasisPrice'])
             self.logger.debug("add symbol: {}, position: {}, costPrice: {}".format(position.attrib['symbol'], position.attrib['position'], position.attrib['costBasisPrice']))
-            self.protofolio.append(IBKRAssert)
+            self.protofolio.append(IBKRasset)
         for FlexStatement in root.iter('FlexStatement'):
             #self.logger.debug(FlexStatement.attrib)
             date = FlexStatement.attrib['whenGenerated'].split(';')[0]
