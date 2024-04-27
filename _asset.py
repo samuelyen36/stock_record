@@ -1,5 +1,6 @@
 import yfinance as yf
 
+#base class
 class _asset:
     def __init__(self, logger, symbol, positions, avgCostPrice = -1.0):
         self.symbol = symbol
@@ -14,7 +15,11 @@ class _asset:
         pass
 
     def dumpInfo(self):
-        self.logger.info("{}\t{}\t{}USD\t{}USD".format(self.whichMarket, self.symbol, self.currentPrice, self.currentPrice*self.positions))
+        self.logger.info("{}\t{}\t{}\t\t{:.2f}USD\t{:.2f}USD".format(self.whichMarket, self.symbol, self.positions, self.currentPrice, self.currentPrice*self.positions))
+
+    def getDictInfo(self):
+        resDict = {"market": self.whichMarket, "symbol": self.symbol, "positions": self.positions, "avgCost": self.avgCostPrice, "currency": self.currency}
+        return resDict
         
 
 class USStockasset(_asset):
@@ -28,6 +33,7 @@ class USStockasset(_asset):
         _asset.__init__(self, logger, symbol, positions, avgCostPrice)
         self.whichMarket = "US"
         self.queryCurrentPrice()
+        self.currency = "USD"
 
 class TWStockasset(_asset):
     def queryCurrentPrice(self):

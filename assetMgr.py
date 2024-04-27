@@ -1,6 +1,7 @@
 import xml.etree.ElementTree as ET
 from _asset import *
 import requests
+import json
 
 class assetMgr():
     def __init__(self, logger) -> None:
@@ -9,7 +10,7 @@ class assetMgr():
         self.logger = logger
     
     def dumpProtofolio(self) -> None:
-        self.logger.info("Market\tSymbol\tCurrentPrice\tCurrentValue\n")
+        self.logger.info("Market\tSymbol\tPositions\tCurrentPrice\tCurrentValue\n")
         for item in self.protofolio:
             item.dumpInfo()
 
@@ -42,3 +43,11 @@ class assetMgr():
         self.exchangeRateUStoTW = float(a[12])
         self.logger.info("exchange rate of {otherCurrency} is 1 {otherCurrency} to {rate}TWD".format(otherCurrency=a[0], rate=self.exchangeRateUStoTW))
         
+    def dumpToJson(self, filename = "protofolio.json"):
+        dictList = []
+        for item in self.protofolio:
+            itemDict = item.getDictInfo()
+            dictList.append(itemDict)
+        with open(filename, 'w+') as f:
+           json.dump(dictList, f)
+        pass

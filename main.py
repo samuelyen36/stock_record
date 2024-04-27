@@ -23,4 +23,6 @@ if __name__ == '__main__':
     logger.info("Dump Protofolio")
     mgr.dumpProtofolio()
 
+    mgr.dumpToJson()
+
     mgr.extractExchangeRate()
