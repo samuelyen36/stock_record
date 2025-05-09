@@ -1,4 +1,6 @@
 import yfinance as yf
+import requests
+import re
 
 #base class
 class _asset:
@@ -38,3 +40,21 @@ class USStockasset(_asset):
 class TWStockasset(_asset):
     def queryCurrentPrice(self):
         return super().queryCurrentPrice()
+
+class LSEStockasset(_asset):
+    def __init__(self, logger, symbol, positions, avgCostPrice = -1):
+        _asset.__init__(self, logger, symbol, positions, avgCostPrice)
+        self.whichMarket = "LSE"
+        self.queryCurrentPrice()
+        self.currency = "USD"
+
+    def queryCurrentPrice(self):        #yfinance can't get data of LSE, get the price from trading view instead
+        tradingViewUrl = "https://www.tradingview.com/symbols/{}-{}/".format(self.whichMarket, self.symbol)
+        r = requests.get(tradingViewUrl)
+        if r.status_code == requests.codes.ok:
+            re_str = "^.+:{\"price\":()}}.+$"     #bracet() refers to capture
+            res = re.search(r'\{\"price\":(\d+\.\d+)\}',r.text)
+            self.currentPrice = float(res.group(1))
+            self.logger.info("Current price for {} is {}".format(self.symbol, self.currentPrice))
+        else:
+            self.currentPrice = float(-1)
